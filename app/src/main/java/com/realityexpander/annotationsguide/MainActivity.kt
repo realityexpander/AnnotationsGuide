@@ -99,7 +99,7 @@ data class User(
         username = username,
         email = email,
         birthDate = birthDate,
-        address = address.new(),  // sub-object must also be copy-created with new()
+        address = address.new(),  // NOTE: sub-object must also be copy-created with new() to run validation
         phone = phone,
     )
 }
