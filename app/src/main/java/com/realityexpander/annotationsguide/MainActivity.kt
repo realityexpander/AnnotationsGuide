@@ -90,15 +90,16 @@ data class User(
     @AllowedRegex(REGEX_PHONE_NUMBER) val phone: String,
 ) {
     init {
-        validateAllowedRegexFields()
+        validateAllowedRegexFields() // kotlinx.serialization calls the `init` block when deserializing.
     }
 
+    // Must be used when using GSON or Moshi as they don't call the `init` block when deserializing.
     fun new(): User = User(
         name = name,
         username = username,
         email = email,
         birthDate = birthDate,
-        address = address.new(),
+        address = address.new(),  // sub-object must also be copy-created with new()
         phone = phone,
     )
 }
@@ -114,6 +115,7 @@ data class Address(
         validateAllowedRegexFields()
     }
 
+    // Must be used when using GSON or Moshi as they don't call the `init` block when deserializing.
     fun new(): Address = Address(
         street = street,
         suite = suite,
@@ -139,6 +141,7 @@ annotation class AllowedRegex(val regex: String) {
         const val REGEX_PHONE_NUMBER = "\\d{3}-\\d{3}-\\d{4}.*"  // "111-222-3333" //.* allows for optional extension
     }
 }
+// Validates all fields with @AllowedRegex annotation
 fun Any.validateAllowedRegexFields() {
     val declaredFields = this::class.java.declaredFields
 
