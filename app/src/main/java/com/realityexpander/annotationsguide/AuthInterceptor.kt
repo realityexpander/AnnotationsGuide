@@ -10,6 +10,7 @@ class AuthInterceptor: Interceptor {
         val invocation = chain.request().tag(Invocation::class.java)
             ?: return chain.proceed(chain.request())
 
+        // Only add the header if the method is annotated with @Authenticated
         val shouldAttachAuthHeader = invocation
             .method()
             .annotations
